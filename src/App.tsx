@@ -2,9 +2,8 @@ import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
-import getCommissionBreakdown from '@/helpers/getCommissionBreakdown.ts';
-getCommissionBreakdown();
-
+import getCommissionBreakdown from '@/helpers/getCommissionBreakdown';
+getCommissionBreakdown(18000);
 function App() {
   const [count, setCount] = useState(0);
 
