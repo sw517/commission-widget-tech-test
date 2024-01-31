@@ -3,12 +3,14 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 import getCommissionBreakdown from '@/helpers/getCommissionBreakdown';
+import CurrencyInput from './ui/CurrencyInput';
 getCommissionBreakdown(18000);
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <>
+      <CurrencyInput />
       <div className="flex justify-center">
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
