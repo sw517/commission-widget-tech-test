@@ -1,12 +1,12 @@
 import { CommissionBreakdown, Range } from '@/types/commission';
 
-const bracketRanges: Range[] = [
+export const bracketRanges: Range[] = [
   { min: 0, max: 5000 },
   { min: 5000, max: 10000 },
   { min: 10000, max: 15000 },
   { min: 15000, max: 20000 },
   { min: 20000, max: null },
-];
+] as const;
 
 export const bracketPercentage = [0, 10, 15, 20, 25];
 
