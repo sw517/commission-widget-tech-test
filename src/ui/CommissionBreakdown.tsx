@@ -8,15 +8,16 @@ export default function CommissionBreakdown({
 }) {
   const getLabel = (index: number): string => {
     const { min, max } = bracketRanges[index];
-    if (!max) return `£${min}+`;
-    return `£${min} - £${max}`;
+    if (!max) return `£${min.toLocaleString()}+`;
+    return `£${min.toLocaleString()} - £${max.toLocaleString()}`;
   };
 
   return (
     <div>
       {breakdown.map((amount, index) => (
         <div>
-          <span>{getLabel(index)}</span> - <span>£{amount}</span>
+          <span className="text-neutral-500">{getLabel(index)}</span> -{' '}
+          <span>£{amount.toLocaleString()}</span>
         </div>
       ))}
     </div>

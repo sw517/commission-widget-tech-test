@@ -1,4 +1,10 @@
-export default function CurrencyInput({ onInput }: { onInput?: () => void }) {
+import { ChangeEvent } from 'react';
+
+export default function CurrencyInput({
+  onInput,
+}: {
+  onInput?: (e: ChangeEvent<HTMLInputElement>) => void;
+}) {
   return (
     <label>
       <span className="block text-left mb-2">Revenue</span>
@@ -10,7 +16,7 @@ export default function CurrencyInput({ onInput }: { onInput?: () => void }) {
           min="0"
           className="pl-6 pr-2 py-2 block w-full"
           placeholder="0"
-          onInput={onInput}
+          onChange={onInput}
         />
       </div>
     </label>
