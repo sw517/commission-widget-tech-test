@@ -1,4 +1,4 @@
-import { Band } from '@/helpers/getCommissionBreakdown';
+import { Band } from '@/types/commission';
 
 export default function BandPill({ band }: { band: Band }) {
   return (

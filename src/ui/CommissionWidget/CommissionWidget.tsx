@@ -1,18 +1,11 @@
-import {
-  ChangeEvent,
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-} from 'react';
+import { ChangeEvent, useEffect, useState, useCallback, useRef } from 'react';
 import CurrencyInput from '@/ui/CurrencyInput/CurrencyInput';
 import Card from '@/ui/Card/Card';
 import CommissionBreakdown from '@/ui/CommissionBreakdown/CommissionBreakdown';
 import getCommissionBreakdown from '@/helpers/getCommissionBreakdown';
-import debounce from 'lodash.debounce';
 import mockFetch from '@/helpers/mockFetch';
-import { bands } from '@/helpers/getCommissionBreakdown';
+import { bands } from '@/types/commission';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export default function CommissionWidget() {
   const [breakdown, setBreakdown] = useState<number[]>(bands.map(() => 0));
@@ -20,9 +13,10 @@ export default function CommissionWidget() {
   const [loading, setLoading] = useState(false);
   const [revenue, setRevenue] = useState(0);
   const prevRevenue = useRef(0);
+  const debouncedValue = useDebounce<number>(revenue);
 
   useEffect(() => {
-    if (prevRevenue.current === revenue) return;
+    if (prevRevenue.current === debouncedValue) return;
 
     let ignore = false;
     setLoading(true);
@@ -30,33 +24,24 @@ export default function CommissionWidget() {
       .then(() => {
         if (ignore) return;
 
-        const res = getCommissionBreakdown(revenue);
+        const res = getCommissionBreakdown(debouncedValue);
         setBreakdown(res.breakdown);
         setTotal(res.total);
       })
       .catch((e) => console.log(e))
       .finally(() => {
         setLoading(false);
-        prevRevenue.current = revenue;
+        prevRevenue.current = debouncedValue;
       });
 
     return () => {
       ignore = true;
     };
-  }, [revenue]);
+  }, [debouncedValue]);
 
-  const debouncedHandleInput = useMemo(() => {
-    return debounce((input: number) => {
-      setRevenue(input);
-    }, 400);
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setRevenue(Number(e.target.value));
   }, []);
-
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      debouncedHandleInput(Number(e.target.value));
-    },
-    [debouncedHandleInput]
-  );
 
   return (
     <Card title="Commission Calculator">

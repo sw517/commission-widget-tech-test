@@ -1,5 +1,7 @@
-import { type CommissionBreakdown as CommissionBreakdownType } from '@/types/commission';
-import { bands } from '@/helpers/getCommissionBreakdown';
+import {
+  type CommissionBreakdown as CommissionBreakdownType,
+  bands,
+} from '@/types/commission';
 import BandPill from '../BandPill/BandPill';
 
 export default function CommissionBreakdown({
