@@ -1,7 +1,7 @@
 import './App.css';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
-import CommissionWidget from './ui/CommissionWidget';
+import CommissionWidget from './ui/CommissionWidget/CommissionWidget';
 
 function App() {
   return (

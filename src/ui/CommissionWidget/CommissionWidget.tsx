@@ -12,12 +12,10 @@ import CommissionBreakdown from '@/ui/CommissionBreakdown/CommissionBreakdown';
 import getCommissionBreakdown from '@/helpers/getCommissionBreakdown';
 import debounce from 'lodash.debounce';
 import mockFetch from '@/helpers/mockFetch';
-import { bracketRanges } from '@/helpers/getCommissionBreakdown';
+import { bands } from '@/helpers/getCommissionBreakdown';
 
 export default function CommissionWidget() {
-  const [breakdown, setBreakdown] = useState<number[]>(
-    bracketRanges.map(() => 0)
-  );
+  const [breakdown, setBreakdown] = useState<number[]>(bands.map(() => 0));
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [revenue, setRevenue] = useState(0);
