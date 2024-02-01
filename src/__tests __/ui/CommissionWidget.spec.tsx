@@ -1,5 +1,5 @@
 import CommissionWidget from '@/ui/CommissionWidget';
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -28,9 +28,18 @@ describe('CommissionWidget', () => {
   });
 
   it('triggers the loading spinner when fetching', async () => {
-    const { unmount } = await act(() => render(<CommissionWidget />));
-    await jest.advanceTimersByTime(3000);
+    const { unmount } = render(<CommissionWidget />);
     expect(screen.queryByTestId('loading-spinner')).toBeNull();
+
+    fireEvent.change(screen.getByTestId('revenue-input'), {
+      target: { value: 18000 },
+    });
+    // Advance past debounce time
+    await act(() => {
+      jest.advanceTimersByTime(500);
+    });
+    expect(screen.queryByTestId('loading-spinner')).toBeTruthy();
+
     unmount();
   });
 });
