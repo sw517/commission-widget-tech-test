@@ -1,4 +1,5 @@
-import { CommissionBreakdown, bands } from '@/types/commission';
+import { CommissionBreakdown } from '@/types/commission';
+import { bands } from '@/data/bands';
 
 export default function getCommissionBreakdown(
   revenue: number

@@ -4,7 +4,7 @@ import Card from '@/ui/Card/Card';
 import CommissionBreakdown from '@/ui/CommissionBreakdown/CommissionBreakdown';
 import getCommissionBreakdown from '@/helpers/getCommissionBreakdown';
 import mockFetch from '@/helpers/mockFetch';
-import { bands } from '@/types/commission';
+import { bands } from '@/data/bands';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export default function CommissionWidget() {
@@ -23,13 +23,13 @@ export default function CommissionWidget() {
     mockFetch()
       .then(() => {
         if (ignore) return;
-
         const res = getCommissionBreakdown(debouncedRevenue);
         setBreakdown(res.breakdown);
         setTotal(res.total);
       })
       .catch((e) => console.log(e))
       .finally(() => {
+        if (ignore) return;
         setLoading(false);
         prevRevenue.current = debouncedRevenue;
       });
