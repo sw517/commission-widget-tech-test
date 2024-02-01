@@ -13,10 +13,10 @@ export default function CommissionWidget() {
   const [loading, setLoading] = useState(false);
   const [revenue, setRevenue] = useState(0);
   const prevRevenue = useRef(0);
-  const debouncedValue = useDebounce<number>(revenue);
+  const debouncedRevenue = useDebounce<number>(revenue);
 
   useEffect(() => {
-    if (prevRevenue.current === debouncedValue) return;
+    if (prevRevenue.current === debouncedRevenue) return;
 
     let ignore = false;
     setLoading(true);
@@ -24,20 +24,20 @@ export default function CommissionWidget() {
       .then(() => {
         if (ignore) return;
 
-        const res = getCommissionBreakdown(debouncedValue);
+        const res = getCommissionBreakdown(debouncedRevenue);
         setBreakdown(res.breakdown);
         setTotal(res.total);
       })
       .catch((e) => console.log(e))
       .finally(() => {
         setLoading(false);
-        prevRevenue.current = debouncedValue;
+        prevRevenue.current = debouncedRevenue;
       });
 
     return () => {
       ignore = true;
     };
-  }, [debouncedValue]);
+  }, [debouncedRevenue]);
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setRevenue(Number(e.target.value));
@@ -48,7 +48,12 @@ export default function CommissionWidget() {
       <div className="mb-3">
         <CurrencyInput onChange={handleChange} loading={loading} />
       </div>
-      {!!breakdown?.length && <CommissionBreakdown breakdown={breakdown} />}
+      {!!breakdown?.length && (
+        <CommissionBreakdown
+          revenue={debouncedRevenue}
+          data={{ breakdown, total }}
+        />
+      )}
       <div
         data-testid="commission-total"
         className="text-right border-t-2 pt-1 font-bold max-w-full whitespace-nowrap overflow-auto"

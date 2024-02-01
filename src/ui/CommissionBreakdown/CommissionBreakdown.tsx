@@ -5,19 +5,24 @@ import {
 import BandPill from '../BandPill/BandPill';
 
 export default function CommissionBreakdown({
-  breakdown,
+  data,
+  revenue,
 }: {
-  breakdown: CommissionBreakdownType['breakdown'];
+  data: CommissionBreakdownType;
+  revenue: number;
 }) {
   return (
     <div className="break-all">
-      {breakdown.map((amount, index) => (
+      {data.breakdown.map((amount, index) => (
         <div
           key={index}
           data-testid={`breakdown-bracket-${index}`}
           className="flex items-center justify-between mb-2"
         >
-          <BandPill band={bands[index]} />{' '}
+          <BandPill
+            band={bands[index]}
+            highlight={revenue > bands[index].range.min}
+          />{' '}
           <span
             data-testid={`breakdown-value-${index}`}
             className="ml-6 max-w-48 whitespace-nowrap overflow-auto"
