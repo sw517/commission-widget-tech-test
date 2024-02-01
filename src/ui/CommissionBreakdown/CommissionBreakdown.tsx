@@ -1,6 +1,7 @@
 import { type CommissionBreakdown as CommissionBreakdownType } from '@/types/commission';
 import { bands } from '@/data/bands';
 import BandPill from '../BandPill/BandPill';
+import displayCurrency from '@/helpers/displayCurrency';
 
 export default function CommissionBreakdown({
   data,
@@ -25,7 +26,7 @@ export default function CommissionBreakdown({
             data-testid={`breakdown-value-${index}`}
             className="ml-6 max-w-48 whitespace-nowrap overflow-auto"
           >
-            £{amount.toLocaleString()}
+            £{displayCurrency(amount)}
           </span>
         </div>
       ))}

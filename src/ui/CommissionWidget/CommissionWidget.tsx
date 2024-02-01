@@ -6,6 +6,7 @@ import getCommissionBreakdown from '@/helpers/getCommissionBreakdown';
 import mockFetch from '@/helpers/mockFetch';
 import { bands } from '@/data/bands';
 import { useDebounce } from '@/hooks/useDebounce';
+import displayCurrency from '@/helpers/displayCurrency';
 
 export default function CommissionWidget() {
   const [breakdown, setBreakdown] = useState<number[]>(bands.map(() => 0));
@@ -56,9 +57,10 @@ export default function CommissionWidget() {
       )}
       <div
         data-testid="commission-total"
-        className="text-right border-t-2 pt-1 font-bold max-w-full whitespace-nowrap overflow-auto"
+        className="flex items-center justify-between border-t-2 pt-1  max-w-full whitespace-nowrap overflow-auto"
       >
-        £{total.toLocaleString()}
+        <span>Commission Total:</span>
+        <span className="ml-5 font-bold">£{displayCurrency(total)}</span>
       </div>
     </Card>
   );
