@@ -1,4 +1,4 @@
-import CommissionWidget from '@/ui/CommissionWidget';
+import CommissionWidget from '@/ui/CommissionWidget/CommissionWidget';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 
 beforeEach(() => {

@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import CurrencyInput from '@/ui/CurrencyInput';
+import CurrencyInput from '@/ui/CurrencyInput/CurrencyInput';
 
 describe('CurrencyInput', () => {
   it('triggers the prop callback on input', () => {

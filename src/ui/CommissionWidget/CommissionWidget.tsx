@@ -6,9 +6,9 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import CurrencyInput from '@/ui/CurrencyInput';
-import Card from '@/ui/Card';
-import CommissionBreakdown from '@/ui/CommissionBreakdown';
+import CurrencyInput from '@/ui/CurrencyInput/CurrencyInput';
+import Card from '@/ui/Card/Card';
+import CommissionBreakdown from '@/ui/CommissionBreakdown/CommissionBreakdown';
 import getCommissionBreakdown from '@/helpers/getCommissionBreakdown';
 import debounce from 'lodash.debounce';
 import mockFetch from '@/helpers/mockFetch';

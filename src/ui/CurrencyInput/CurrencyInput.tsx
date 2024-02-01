@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react';
-import LoadingSpinner from '@/ui/LoadingSpinner';
+import LoadingSpinner from '@/ui/LoadingSpinner/LoadingSpinner';
 
 export default function CurrencyInput({
   onChange,
