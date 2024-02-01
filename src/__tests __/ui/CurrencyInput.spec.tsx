@@ -10,4 +10,14 @@ describe('CurrencyInput', () => {
     expect(callback).toHaveBeenCalled();
     unmount();
   });
+
+  it('only renders a loading spinner when loading', () => {
+    const notLoadingComponent = render(<CurrencyInput loading={false} />);
+    expect(screen.queryByTestId('loading-spinner')).toBeNull();
+    notLoadingComponent.unmount();
+
+    const loadingComponent = render(<CurrencyInput loading={true} />);
+    expect(screen.queryByTestId('loading-spinner')).toBeTruthy();
+    loadingComponent.unmount();
+  });
 });

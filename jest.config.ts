@@ -6,7 +6,7 @@ export default {
     '^.+\\.ts?$': 'ts-jest',
   },
   moduleNameMapper: {
-    '.+\\.(svg|png|jpg)$': 'identity-obj-proxy',
+    '.+\\.(svg|png|jpg)$': '<rootDir>/src/__mocks__/mockFile.ts',
     '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
     '@/(.*)': '<rootDir>/src/$1',
   },
