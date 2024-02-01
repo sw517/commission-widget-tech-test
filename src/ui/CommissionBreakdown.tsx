@@ -15,7 +15,7 @@ export default function CommissionBreakdown({
   return (
     <div>
       {breakdown.map((amount, index) => (
-        <div>
+        <div key={index}>
           <span className="text-neutral-500">{getLabel(index)}</span> -{' '}
           <span>£{amount.toLocaleString()}</span>
         </div>

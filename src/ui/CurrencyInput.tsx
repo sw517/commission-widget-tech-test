@@ -1,9 +1,9 @@
 import { ChangeEvent } from 'react';
 
 export default function CurrencyInput({
-  onInput,
+  onChange,
 }: {
-  onInput?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <label>
@@ -16,7 +16,7 @@ export default function CurrencyInput({
           min="0"
           className="pl-6 pr-2 py-2 block w-full"
           placeholder="0"
-          onChange={onInput}
+          onChange={onChange}
         />
       </div>
     </label>
