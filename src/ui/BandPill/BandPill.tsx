@@ -10,6 +10,7 @@ export default function BandPill({
 }) {
   return (
     <span
+      data-testid="band-pill"
       className={clsx([
         'shrink-0  text-white rounded-xl pl-2 pr-1 flex justify-between items-center',
         highlight ? 'bg-blue-700' : 'bg-neutral-500',

@@ -10,6 +10,7 @@ export default function getCommissionBreakdown(
     return (bracketAmount / 100) * percentage;
   });
   return {
+    bands,
     breakdown,
     total: breakdown.reduce((acc, n) => acc + n, 0),
   };

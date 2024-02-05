@@ -1,5 +1,7 @@
 import CommissionWidget from '@/ui/CommissionWidget/CommissionWidget';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import { defaultDebounceDelay } from '@/hooks/useDebounce';
+import * as mockFetchHelper from '@/helpers/mockFetch';
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -10,20 +12,26 @@ afterEach(() => {
 });
 
 describe('CommissionWidget', () => {
-  test.each([0, 1, 2, 3, 4])(
-    'initialises breakdown value $s value as 0',
-    (index) => {
-      const { unmount } = render(<CommissionWidget />);
-      expect(
-        screen.getByTestId(`breakdown-value-${index}`).textContent
-      ).toContain('£0');
-      unmount();
-    }
-  );
-
-  it('initialises the total as 0', () => {
+  it('initialises the EmptyState', () => {
     const { unmount } = render(<CommissionWidget />);
-    expect(screen.getByTestId('commission-total').textContent).toContain('£0');
+    expect(screen.queryByTestId('empty-state')).toBeTruthy();
+    unmount();
+  });
+
+  it('fetches data on debounced revenue input update', async () => {
+    const mockFetchSpy = jest.spyOn(mockFetchHelper, 'default');
+    const { unmount } = render(<CommissionWidget />);
+    expect(mockFetchSpy).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByTestId('revenue-input'), {
+      target: { value: 18000 },
+    });
+
+    await act(() => {
+      jest.advanceTimersByTime(defaultDebounceDelay);
+    });
+
+    expect(mockFetchSpy).toHaveBeenCalledTimes(1);
     unmount();
   });
 
@@ -34,12 +42,31 @@ describe('CommissionWidget', () => {
     fireEvent.change(screen.getByTestId('revenue-input'), {
       target: { value: 18000 },
     });
-    // Advance past debounce time
+
     await act(() => {
-      jest.advanceTimersByTime(500);
+      jest.advanceTimersByTime(defaultDebounceDelay);
     });
     expect(screen.queryByTestId('loading-spinner')).toBeTruthy();
 
+    unmount();
+  });
+
+  it('handles failing to fetch data', async () => {
+    jest.spyOn(mockFetchHelper, 'default').mockRejectedValue('bad response');
+    const { unmount } = render(<CommissionWidget />);
+
+    fireEvent.change(screen.getByTestId('revenue-input'), {
+      target: { value: 18000 },
+    });
+
+    await act(() => {
+      jest.advanceTimersByTime(
+        defaultDebounceDelay + mockFetchHelper.mockFetchDelay
+      );
+    });
+
+    expect(screen.queryByTestId('loading-spinner')).toBe(null);
+    expect(screen.queryByText('bad response')).toBeTruthy();
     unmount();
   });
 });

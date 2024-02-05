@@ -1,4 +1,5 @@
 import getCommissionBreakdown from '@/helpers/getCommissionBreakdown';
+import { bands } from '@/data/bands';
 
 describe('getCommissionBreakdown', () => {
   it('returns an object containing total (number) and breakdown (number array)', () => {
@@ -7,6 +8,7 @@ describe('getCommissionBreakdown', () => {
       expect.objectContaining({
         total: 1850,
         breakdown: [0, 500, 750, 600, 0],
+        bands,
       })
     );
   });

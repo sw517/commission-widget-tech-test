@@ -2,33 +2,40 @@ import { ChangeEvent, useEffect, useState, useCallback, useRef } from 'react';
 import CurrencyInput from '@/ui/CurrencyInput/CurrencyInput';
 import Card from '@/ui/Card/Card';
 import CommissionBreakdown from '@/ui/CommissionBreakdown/CommissionBreakdown';
-import getCommissionBreakdown from '@/helpers/getCommissionBreakdown';
 import mockFetch from '@/helpers/mockFetch';
-import { bands } from '@/data/bands';
 import { useDebounce } from '@/hooks/useDebounce';
-import displayCurrency from '@/helpers/displayCurrency';
+import ClearButton from '@/ui/ClearButton/ClearButton';
+import EmptyState from '@/ui/EmptyState/EmptyState';
+import { Band } from '@/types/commission';
 
 export default function CommissionWidget() {
-  const [breakdown, setBreakdown] = useState<number[]>(bands.map(() => 0));
+  const [breakdown, setBreakdown] = useState<number[]>([]);
   const [total, setTotal] = useState(0);
+  const [bands, setBands] = useState<Band[]>([]);
   const [loading, setLoading] = useState(false);
-  const [revenue, setRevenue] = useState(0);
+  const [revenue, setRevenue] = useState<number | ''>('');
+  const [error, setError] = useState('');
+  const [isApiBad, setIsApiBad] = useState(false);
   const prevRevenue = useRef(0);
-  const debouncedRevenue = useDebounce<number>(revenue);
+  const debouncedRevenue = useDebounce<number | ''>(revenue);
 
   useEffect(() => {
-    if (prevRevenue.current === debouncedRevenue) return;
+    if (!debouncedRevenue || prevRevenue.current === debouncedRevenue) return;
 
     let ignore = false;
     setLoading(true);
-    mockFetch()
-      .then(() => {
+    mockFetch('fake-api-url', debouncedRevenue, isApiBad)
+      .then((res) => res.json())
+      .then((data) => {
         if (ignore) return;
-        const res = getCommissionBreakdown(debouncedRevenue);
-        setBreakdown(res.breakdown);
-        setTotal(res.total);
+        setBreakdown(data.breakdown);
+        setTotal(data.total);
+        setBands(data.bands);
+        setError('');
       })
-      .catch((e) => console.log(e))
+      .catch((e) => {
+        setError(e);
+      })
       .finally(() => {
         if (ignore) return;
         setLoading(false);
@@ -37,31 +44,63 @@ export default function CommissionWidget() {
 
     return () => {
       ignore = true;
+      setLoading(false);
     };
-  }, [debouncedRevenue]);
+  }, [debouncedRevenue, isApiBad]);
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setRevenue(Number(e.target.value));
+    if (e.target.value?.length > 1 && e.target.value[0] === '0') {
+      const trimmedInput = Number(e.target.value.slice(0));
+      setRevenue(trimmedInput);
+    } else {
+      setRevenue(Number(e.target.value));
+    }
   }, []);
 
+  const handleClear = useCallback(() => {
+    setRevenue(0);
+  }, []);
+
+  const handleApiErrorInput = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setIsApiBad(e.target.checked);
+    },
+    []
+  );
+
   return (
-    <Card title="Commission Calculator">
-      <div className="mb-3">
-        <CurrencyInput onChange={handleChange} loading={loading} />
-      </div>
-      {!!breakdown?.length && (
-        <CommissionBreakdown
-          revenue={debouncedRevenue}
-          data={{ breakdown, total }}
+    <>
+      <Card title="Commission Calculator">
+        <div className="mb-3 flex items-end">
+          <div className="mr-4">
+            <CurrencyInput
+              onChange={handleChange}
+              loading={loading}
+              value={revenue}
+            />
+          </div>
+          <ClearButton onClick={handleClear} disabled={!debouncedRevenue} />
+        </div>
+
+        {!debouncedRevenue && <EmptyState />}
+        {!loading && error}
+        {!!debouncedRevenue && !error && (loading || !!breakdown?.length) && (
+          <CommissionBreakdown
+            revenue={debouncedRevenue}
+            loading={loading}
+            data={{ breakdown, total, bands }}
+          />
+        )}
+      </Card>
+      <label className="mt-6 flex items-center">
+        <input
+          type="checkbox"
+          value="true"
+          checked={isApiBad}
+          onChange={handleApiErrorInput}
         />
-      )}
-      <div
-        data-testid="commission-total"
-        className="flex items-center justify-between border-t-2 pt-1  max-w-full whitespace-nowrap overflow-auto"
-      >
-        <span>Commission Total:</span>
-        <span className="ml-5 font-bold">£{displayCurrency(total)}</span>
-      </div>
-    </Card>
+        <span className="ml-1">Simulate Bad Response</span>
+      </label>
+    </>
   );
 }
