@@ -69,4 +69,15 @@ describe('CommissionWidget', () => {
     expect(screen.queryByText('bad response')).toBeTruthy();
     unmount();
   });
+
+  it('removes the leading zero from the input', () => {
+    const { unmount } = render(<CommissionWidget />);
+
+    fireEvent.change(screen.getByTestId('revenue-input'), {
+      target: { value: '018000' },
+    });
+    expect(screen.queryByDisplayValue('018000')).toBeNull();
+    expect(screen.queryByDisplayValue('18000')).toBeTruthy();
+    unmount();
+  });
 });
