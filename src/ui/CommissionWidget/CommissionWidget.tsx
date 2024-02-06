@@ -83,7 +83,7 @@ export default function CommissionWidget() {
         </div>
 
         {!debouncedRevenue && <EmptyState />}
-        {!loading && error}
+        {!loading && !!debouncedRevenue && error}
         {!!debouncedRevenue && !error && (loading || !!breakdown?.length) && (
           <CommissionBreakdown
             revenue={debouncedRevenue}
