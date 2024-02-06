@@ -5,7 +5,12 @@ describe('CurrencyInput', () => {
   it('triggers the prop callback on input', () => {
     const callback = jest.fn();
     const { unmount } = render(
-      <CurrencyInput value={0} loading={false} onChange={callback} />
+      <CurrencyInput
+        value={0}
+        loading={false}
+        onChange={callback}
+        onClear={jest.fn()}
+      />
     );
     const inputEl = screen.getByTestId('revenue-input');
     fireEvent.input(inputEl, { target: { value: 10 } });
@@ -13,17 +18,49 @@ describe('CurrencyInput', () => {
     unmount();
   });
 
-  it('only renders a loading spinner when loading', () => {
-    const notLoadingComponent = render(
-      <CurrencyInput value={0} onChange={jest.fn()} loading={false} />
+  it('renders a loading spinner when loading', () => {
+    const { unmount, rerender } = render(
+      <CurrencyInput
+        value={0}
+        onChange={jest.fn()}
+        onClear={jest.fn()}
+        loading={false}
+      />
     );
     expect(screen.queryByTestId('loading-spinner')).toBeNull();
-    notLoadingComponent.unmount();
 
-    const loadingComponent = render(
-      <CurrencyInput value={0} onChange={jest.fn()} loading={true} />
+    rerender(
+      <CurrencyInput
+        value={0}
+        onChange={jest.fn()}
+        onClear={jest.fn()}
+        loading={true}
+      />
     );
     expect(screen.queryByTestId('loading-spinner')).toBeTruthy();
-    loadingComponent.unmount();
+    unmount();
+  });
+
+  it('renders a ClearButton if the input contains a value', () => {
+    const { unmount, rerender } = render(
+      <CurrencyInput
+        value={0}
+        onChange={jest.fn()}
+        onClear={jest.fn()}
+        loading={false}
+      />
+    );
+    expect(screen.queryByTestId('clear-button')).toBeNull();
+
+    rerender(
+      <CurrencyInput
+        value={10000}
+        onChange={jest.fn()}
+        onClear={jest.fn()}
+        loading={false}
+      />
+    );
+    expect(screen.queryByTestId('clear-button')).toBeTruthy();
+    unmount();
   });
 });

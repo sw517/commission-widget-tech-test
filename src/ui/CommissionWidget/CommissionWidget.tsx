@@ -4,7 +4,6 @@ import Card from '@/ui/Card/Card';
 import CommissionBreakdown from '@/ui/CommissionBreakdown/CommissionBreakdown';
 import mockFetch from '@/helpers/mockFetch';
 import { useDebounce } from '@/hooks/useDebounce';
-import ClearButton from '@/ui/ClearButton/ClearButton';
 import EmptyState from '@/ui/EmptyState/EmptyState';
 import { Band } from '@/types/commission';
 
@@ -71,15 +70,13 @@ export default function CommissionWidget() {
   return (
     <>
       <Card title="Commission Calculator">
-        <div className="mb-3 flex items-end">
-          <div className="mr-4">
-            <CurrencyInput
-              onChange={handleChange}
-              loading={loading}
-              value={revenue}
-            />
-          </div>
-          <ClearButton onClick={handleClear} disabled={!debouncedRevenue} />
+        <div className="mb-3">
+          <CurrencyInput
+            onChange={handleChange}
+            onClear={handleClear}
+            loading={loading}
+            value={revenue}
+          />
         </div>
 
         {!debouncedRevenue && <EmptyState />}
